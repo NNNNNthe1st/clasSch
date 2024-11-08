@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Class Schedule</title>
+    <link rel="stylesheet" href="{% static 'main/css/styles.css' %}">
+</head>
+<body>
+    {% include "partials/header.html" %}
+    
+    <div class="container">
+        <h1>Class Schedule</h1>
+        
+        <div class="schedule-container">
+            {% if slots %}
+                <table class="schedule-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Time</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for slot in slots %}
+                            <tr class="{% if slot.is_available %}available-slot{% else %}booked-slot{% endif %}">
+                                <td>{{ slot.day }}</td>
+                                <td>{{ slot.start_time }} - {{ slot.end_time }}</td>
+                                <td>{{ "Available" if slot.is_available else "Booked" }}</td>
+                                <td>
+                                    {% if slot.is_available %}
+                                        <a href="{% url 'book_class' slot.id %}" class="btn book-btn">Book Now</a>
+                                    {% else %}
+                                        <span>Booked by {{ slot.booked_by.username }}</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p>No available slots in the next two weeks. Please check back later.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    {% include "partials/footer.html" %}
+
+    <script src="{% static 'main/js/schedule.js' %}"></script>
+</body>
+</html>
